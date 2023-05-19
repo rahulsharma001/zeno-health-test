@@ -27,4 +27,14 @@ class RepositoryServiceProvider extends ServiceProvider implements DeferrablePro
             return new DrugRepository(new Drug());
         });
     }
+
+    /**
+     * @return array
+     */
+    public function provides(): array
+    {
+        return [
+            DrugInterface::class,
+        ];
+    }
 }

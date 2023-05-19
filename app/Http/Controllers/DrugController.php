@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Api\Created;
+use App\Http\Resources\Api\Deleted;
+use App\Http\Resources\Api\NotFoundResource;
+use App\Http\Resources\Api\Success;
 use App\Models\Drug;
-use App\Services\DrugService;
+use App\Services\Drug\DrugService;
 use Illuminate\Http\Request;
 
 class DrugController extends Controller
@@ -12,6 +16,7 @@ class DrugController extends Controller
 
     public function __construct(DrugService $drugService)
     {
+        $this->middleware('auth:api');
         $this->drugService = $drugService;
     }
     /**
@@ -21,7 +26,8 @@ class DrugController extends Controller
      */
     public function index()
     {
-        return $this->drugService->getAllDrugs();
+        $response = $this->drugService->getAllDrugs();
+        return new Success($response);
     }
 
     /**
@@ -42,7 +48,8 @@ class DrugController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $response = $this->drugService->store($request->toArray());
+        return new Created($response);
     }
 
     /**
@@ -53,7 +60,8 @@ class DrugController extends Controller
      */
     public function show(Drug $drug)
     {
-        //
+        $drug = $this->drugService->getDrugById($drug);
+        return new Success($drug);
     }
 
     /**
@@ -76,7 +84,10 @@ class DrugController extends Controller
      */
     public function update(Request $request, Drug $drug)
     {
-        //
+        $res = $this->drugService->updateDrug($request->toArray(), $drug);
+        if ($res)
+            return new Success("Record Updated Successfully");
+        return new NotFoundResource('Record Not Found');
     }
 
     /**
@@ -87,6 +98,10 @@ class DrugController extends Controller
      */
     public function destroy(Drug $drug)
     {
-        //
+        $res =  $this->drugService->deleteDrug($drug);
+        if ($res)
+            return new Deleted('Record Deleted Successfully');
+
+        return new NotFoundResource('Record Not Found');
     }
 }

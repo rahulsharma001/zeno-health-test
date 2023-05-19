@@ -38,4 +38,16 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         return $this->model->find($id);
     }
+
+    /**
+     * @param mixed $id
+     * 
+     * @return mixed
+     */
+    public function delete($id)
+    {
+        return $this->model
+            ->whereId($id)
+            ->delete();
+    }
 }

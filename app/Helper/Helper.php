@@ -8,7 +8,6 @@ class Helper
     {
         if (!file_exists($file) || !is_readable($file))
             return false;
-
         $header = null;
         $data = array();
 
